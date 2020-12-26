@@ -17,7 +17,7 @@ const partySchema = mongoose.Schema({
         type: ObjectId,
         ref: 'users'
     },
-    partyId: {
+    orgId: {
         type: ObjectId,
         ref: 'organization'
     }
