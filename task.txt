@@ -1,0 +1,32 @@
+home-page
+    -login
+        -email
+        -password encryp
+    -register
+        -name
+        -email
+        -password
+
+views-pages
+    -dashboard
+        -select organization
+            -company name(options)
+        -add,insert,update party (organition wise) (know who has changed)
+        -table display
+
+
+tbales
+    -user
+        -id(pk)
+        -name
+        -email
+        -password
+    -organition
+        -id(pk)
+        -company_name
+    -party
+        -id(pk)
+        -name
+        -contact
+        -uid(ref of user)
+        -oid(ref of organition)
