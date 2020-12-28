@@ -20,6 +20,10 @@ const partySchema = mongoose.Schema({
     orgId: {
         type: ObjectId,
         ref: 'organization'
+    },
+    isDel:{
+        type:Boolean,
+        default:true
     }
 }, { strict: false, timestamps: true })
 

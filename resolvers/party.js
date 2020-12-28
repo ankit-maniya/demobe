@@ -34,9 +34,9 @@ party.get('/', async (req, res, next) => {
 
 party.get('/:id', async (req, res, next) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const Partys = await models.Party.findOne({
-            _id:id
+            _id: id
         })
         res.json(Partys);
     } catch (error) {
@@ -46,11 +46,11 @@ party.get('/:id', async (req, res, next) => {
 
 // get  party wise data
 party.post('/getAllParty', async (req, res, next) => {
-    console.log("party data===>",req.body);
     try {
         const { orgId, userid } = req.body;
         const getParty = await models.Party.find({
             orgId: orgId,
+            isDel:true,
             createdBy: userid
         }).populate('orgId')
         if (!getParty) return res.send("Not Found");
@@ -95,9 +95,10 @@ party.put('/:id', async (req, res, next) => {
 party.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const deleteParty = await models.Party.remove({
+        const deleteParty = await models.Party.updateOne({
             _id: id
-        })
+
+        }, { $set: { isDel: false } })
         if (!deleteParty) return next()
         res.send(deleteParty);
     } catch (error) {
