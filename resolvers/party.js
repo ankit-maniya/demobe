@@ -64,9 +64,16 @@ party.post('/getAllParty', async (req, res, next) => {
 party.post('/', async (req, res, next) => {
     try {
         req.body.createdBy = req.body.userid;
-        const value = await Schema.validateAsync(req.body)
-        delete value["userid"];
-        const inserted = await models.Party.create(value);
+        const data = req.body;
+        data["inputFields"].map((inputField)=>(
+            inputField["orgId"] = data.orgId,
+            inputField["createdBy"] = data.createdBy
+        ))
+        delete data['userid'];
+        delete data['orgId'];
+        delete data['createdBy'];
+        const value = data["inputFields"]
+        const inserted = await models.Party.insertMany(value);
         res.send(inserted);
     } catch (error) {
         res.json(200, { error })
@@ -101,6 +108,22 @@ party.delete('/:id', async (req, res, next) => {
         }, { $set: { isDel: false } })
         if (!deleteParty) return next()
         res.send(deleteParty);
+    } catch (error) {
+        res.send(200, { error })
+    }
+})
+
+// delete Party
+party.post('/isBatchDelete', async (req, res, next) => {
+    try {
+        const { deleteBatch } = req.body;
+        const deleteBatchParty = await models.Party.updateMany({
+            _id: {
+                $in:deleteBatch
+            }
+        }, { $set: { isDel: false } })
+        if (!deleteBatchParty) return next()
+        res.send(deleteBatchParty);
     } catch (error) {
         res.send(200, { error })
     }

@@ -41,8 +41,8 @@ Organization.get('/:id', (req, res, next) => {
 // insert One
 Organization.post('/', async (req, res, next) => {
     try {
-        const value = await Schema.validateAsync(req.body)
-        const insertOn = await models.Organization.create(value)
+        const value = req.body;
+        const insertOn = await models.Organization.create(value);
         res.status(200).json(insertOn)
     } catch (error) {
         res.status(400).json(error)
