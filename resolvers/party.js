@@ -50,7 +50,7 @@ party.post('/getAllParty', async (req, res, next) => {
         const { orgId, userid } = req.body;
         const getParty = await models.Party.find({
             orgId: orgId,
-            isDel:true,
+            isDel: true,
             createdBy: userid
         }).populate('orgId')
         if (!getParty) return res.send("Not Found");
@@ -65,7 +65,7 @@ party.post('/', async (req, res, next) => {
     try {
         req.body.createdBy = req.body.userid;
         const data = req.body;
-        data["inputFields"].map((inputField)=>(
+        data["inputFields"].map((inputField) => (
             inputField["orgId"] = data.orgId,
             inputField["createdBy"] = data.createdBy
         ))
@@ -73,7 +73,19 @@ party.post('/', async (req, res, next) => {
         delete data['orgId'];
         delete data['createdBy'];
         const value = data["inputFields"]
-        const inserted = await models.Party.insertMany(value);
+        console.log("asdajshdj------", data);
+        var inserted = ""
+        if (data['upFlag'] == true) {
+            delete data['upFlag'];
+            console.log("updateMany------", value);
+            value.map(async (val) => {
+                inserted = await models.Party.updateOne({ _id: val._id }, { $set: { name: val.name, contact: val.contact } });
+            })
+        } else {
+            delete data['upFlag'];
+            console.log("insertMany------", data);
+            inserted = await models.Party.insertMany(value);
+        }
         res.send(inserted);
     } catch (error) {
         res.json(200, { error })
@@ -119,7 +131,7 @@ party.post('/isBatchDelete', async (req, res, next) => {
         const { deleteBatch } = req.body;
         const deleteBatchParty = await models.Party.updateMany({
             _id: {
-                $in:deleteBatch
+                $in: deleteBatch
             }
         }, { $set: { isDel: false } })
         if (!deleteBatchParty) return next()
